@@ -13,13 +13,38 @@ const tours = JSON.parse(
 
 app.get('/v1/tours', function (req, res) {
     res.status(200).json({
-        status: 200,
+        status: "Success",
         results: tours.length,
         data: {
             tours
         },
     });
 });
+
+app.get('/v1/tours/:id', function (req, res) {
+
+    let id = parseInt(req.params.id);
+
+    const tour = tours.find(function (tour) {
+        return tour.id == id;
+    });
+
+    if (!tour) {
+        res.status(404).json({
+            status: "Fail",
+            message: "Invalid ID"
+        })
+    }
+
+    res.status(200).json({
+        status: "Success",
+        data: {
+            tour
+        },
+    });
+});
+
+
 
 app.post('/v1/tours', function (req, res) {
     const newId = tours[tours.length - 1].id + 1;
