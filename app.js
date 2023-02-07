@@ -11,7 +11,7 @@ const tours = JSON.parse(
     )
 );
 
-app.get('/v1/tours', function (req, res) {
+const getAllTours = function (req, res) {
     res.status(200).json({
         status: "Success",
         results: tours.length,
@@ -19,9 +19,9 @@ app.get('/v1/tours', function (req, res) {
             tours
         },
     });
-});
+}
 
-app.get('/v1/tours/:id', function (req, res) {
+const getTour = function (req, res) {
 
     let id = parseInt(req.params.id);
 
@@ -42,40 +42,9 @@ app.get('/v1/tours/:id', function (req, res) {
             tour
         },
     });
-});
+}
 
-app.patch('/v1/tours/:id', function(req, res) {
-    const id = parseInt(req.params.id);
-
-    if (id > tours.length) {
-        return res.status(404).json({
-            status: 'Fail',
-            message: 'Invalid ID'
-        });
-    }     
-
-    res.status(200).json({
-        status: "Success",
-        message: "Tour updated successfully"
-    });
-});
-
-app.delete('/v1/tours/:id', function(req, res) {
-    const id = parseInt(req.params.id);
-
-    if (id > tours.length) {
-        return res.status(404).json({
-            status: 'Fail',
-            message: 'Invalid ID'
-        });
-    }     
-
-    res.status(204).json({
-        status: "Success",
-    });
-});
-
-app.post('/v1/tours', function (req, res) {
+const createTour = function (req, res) {
     const newId = tours[tours.length - 1].id + 1;
     const newTour = Object.assign(
         { id: newId },
@@ -95,7 +64,47 @@ app.post('/v1/tours', function (req, res) {
             });
         }
     );
-});
+}
+
+const updateTour = function (req, res) {
+    const id = parseInt(req.params.id);
+
+    if (id > tours.length) {
+        return res.status(404).json({
+            status: 'Fail',
+            message: 'Invalid ID'
+        });
+    }
+
+    res.status(200).json({
+        status: "Success",
+        message: "Tour updated successfully"
+    });
+}
+
+const deleteTour = function (req, res) {
+    const id = parseInt(req.params.id);
+
+    if (id > tours.length) {
+        return res.status(404).json({
+            status: 'Fail',
+            message: 'Invalid ID'
+        });
+    }
+
+    res.status(204).json({
+        status: "Success",
+    });
+}
+
+app.route('/v1/tours')
+    .get(getAllTours)
+    .post(createTour)
+
+app.route('/v1/tours/:id')
+    .get(getTour)
+    .patch(updateTour)
+    .delete(deleteTour)
 
 const port = 5000;
 
