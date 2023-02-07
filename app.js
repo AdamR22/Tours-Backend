@@ -1,9 +1,18 @@
-const express = require('express');
-
 const fs = require('fs');
+const express = require('express');
+const morgan = require('morgan');
+
 const app = express();
 
+app.use(morgan('dev'));
+
 app.use(express.json());
+
+app.use(function (req, res, next) {
+    req.requestTime = new Date().toISOString();
+    next();
+});
+
 
 const tours = JSON.parse(
     fs.readFileSync(
@@ -14,6 +23,7 @@ const tours = JSON.parse(
 const getAllTours = function (req, res) {
     res.status(200).json({
         status: "Success",
+        requestedAt: req.requestTime,
         results: tours.length,
         data: {
             tours
