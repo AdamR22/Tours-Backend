@@ -6,6 +6,16 @@ const tours = JSON.parse(
     )
 );
 
+exports.checkReqBodyId = function (req, res, next, value) {
+    if (parseInt(req.params.id) > tours.length) {
+        return res.status(404).json({
+            status: 'Fail',
+            message: 'Invalid ID'
+        });
+    }
+    next();
+}
+
 exports.getAllTours = function (req, res) {
     res.status(200).json({
         status: "Success",
@@ -63,15 +73,6 @@ exports.createTour = function (req, res) {
 }
 
 exports.updateTour = function (req, res) {
-    const id = parseInt(req.params.id);
-
-    if (id > tours.length) {
-        return res.status(404).json({
-            status: 'Fail',
-            message: 'Invalid ID'
-        });
-    }
-
     res.status(200).json({
         status: "Success",
         message: "Tour updated successfully"
@@ -79,15 +80,6 @@ exports.updateTour = function (req, res) {
 }
 
 exports.deleteTour = function (req, res) {
-    const id = parseInt(req.params.id);
-
-    if (id > tours.length) {
-        return res.status(404).json({
-            status: 'Fail',
-            message: 'Invalid ID'
-        });
-    }
-
     res.status(204).json({
         status: "Success",
     });

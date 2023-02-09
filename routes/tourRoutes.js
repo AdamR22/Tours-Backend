@@ -1,4 +1,5 @@
 const { 
+    checkReqBodyId,
     getTour, 
     getAllTours, 
     createTour, 
@@ -9,6 +10,8 @@ const {
 const express = require('express');
 
 const router = express.Router();
+
+router.param('id', checkReqBodyId);
 
 router.route('/')
     .get(getAllTours)
