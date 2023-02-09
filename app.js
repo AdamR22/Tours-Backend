@@ -107,14 +107,58 @@ const deleteTour = function (req, res) {
     });
 }
 
+const getAllUsers = function (req, res) {
+    res.status(500).json({
+        status: "Error",
+        message: "Route is not yet defined"
+    });
+}
+
+const getUser = function (req, res) {
+    res.status(500).json({
+        status: "Error",
+        message: "Route is not yet defined"
+    });
+}
+
+const createUser = function (req, res) {
+    res.status(500).json({
+        status: "Error",
+        message: "Route is not yet defined"
+    });
+}
+
+const updateUser = function (req, res) {
+    res.status(500).json({
+        status: "Error",
+        message: "Route is not yet defined"
+    });
+}
+
+const deleteUser = function (req, res) {
+    res.status(500).json({
+        status: "Error",
+        message: "Route is not yet defined"
+    });
+}
+
 app.route('/v1/tours')
     .get(getAllTours)
-    .post(createTour)
+    .post(createTour);
 
 app.route('/v1/tours/:id')
     .get(getTour)
     .patch(updateTour)
-    .delete(deleteTour)
+    .delete(deleteTour);
+
+app.route('/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
+
+app.route('/v1/users/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 const port = 5000;
 
