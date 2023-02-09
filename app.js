@@ -13,7 +13,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-
 const tours = JSON.parse(
     fs.readFileSync(
         `${__dirname}/dev-data/data/tours-simple.json`
@@ -142,20 +141,26 @@ const deleteUser = function (req, res) {
     });
 }
 
-app.route('/v1/tours')
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+app.use('/v1/tours', tourRouter);
+app.use('/v1/users', userRouter);
+
+tourRouter.route('/')
     .get(getAllTours)
     .post(createTour);
 
-app.route('/v1/tours/:id')
+tourRouter.route('/:id')
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
 
-app.route('/v1/users')
+userRouter.route('/')
     .get(getAllUsers)
     .post(createUser);
 
-app.route('/v1/users/:id')
+userRouter.route('/:id')
     .get(getUser)
     .patch(updateUser)
     .delete(deleteUser);
