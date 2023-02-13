@@ -1,5 +1,6 @@
 const { 
     checkReqBodyId,
+    checkReqBodyOk,
     getTour, 
     getAllTours, 
     createTour, 
@@ -15,7 +16,7 @@ router.param('id', checkReqBodyId);
 
 router.route('/')
     .get(getAllTours)
-    .post(createTour);
+    .post(checkReqBodyOk, createTour);
 
 router.route('/:id')
     .get(getTour)
