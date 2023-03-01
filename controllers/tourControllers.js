@@ -1,51 +1,100 @@
-exports.checkReqBodyId = function (req, res, next) {
-    //TODO: Implement middleware
-    next();
-}
+const Tour = require('../models/tourModel');
 
-exports.checkReqBodyOk = function (req, res, next) {
-    if (!req.body.name || !req.body.price) {
-        return res.status(400).json({
-            status: 'Fail',
-            message: "Missing name or price"
+exports.getAllTours = async function (_, res) {
+
+    try {
+        const tours = await Tour.find();
+
+        res.status(200).json({
+            status: "Success",
+            data: {
+                tours
+            }
+        });
+
+    } catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error
         });
     }
-
-    next();
 }
 
-exports.getAllTours = function (req, res) {
-    res.status(500).json({
-        status: "Error",
-        message: "Route is not yet defined"
-    });
+exports.getTour = async function (req, res) {
+
+    try {
+        const tours = await Tour.findById(req.params.id);
+
+        res.status(200).json({
+            status: "Success",
+            data: {
+                tours
+            }
+        });
+
+    } catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error
+        });
+    }
 }
 
-exports.getTour = function (req, res) {
+exports.createTour = async function (req, res) {
 
-    res.status(500).json({
-        status: "Error",
-        message: "Route is not yet defined"
-    });
+    try {
+        const newTour = await Tour.create(req.body);
+
+        res.status(201).json({
+            status: "Success",
+            data: {
+                tour: newTour
+            }
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            status: 'Fail',
+            message: "Invalid data sent."
+        });
+    }
 }
 
-exports.createTour = function (req, res) {
-    res.status(500).json({
-        status: "Error",
-        message: "Route is not yet defined"
-    });
+exports.updateTour = async function (req, res) {
+    try {
+        const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+
+        res.status(200).json({
+            status: "Success",
+            data: {
+                tour
+            }
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            status: "Fail",
+            message: error
+        });
+    }
 }
 
-exports.updateTour = function (req, res) {
-    res.status(500).json({
-        status: "Error",
-        message: "Route is not yet defined"
-    });
-}
+exports.deleteTour = async function (req, res) {
+    try {
+        await Tour.findByIdAndDelete(req.params.id);
 
-exports.deleteTour = function (req, res) {
-    res.status(500).json({
-        status: "Error",
-        message: "Route is not yet defined"
-    });
+        res.status(204).json({
+            status: "Success",
+            data: null,
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            status: "Fail",
+            message: error
+        });
+    }
 }

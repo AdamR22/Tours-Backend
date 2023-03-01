@@ -12,11 +12,9 @@ const express = require('express');
 
 const router = express.Router();
 
-router.param('id', checkReqBodyId);
-
 router.route('/')
     .get(getAllTours)
-    .post(checkReqBodyOk, createTour);
+    .post(createTour);
 
 router.route('/:id')
     .get(getTour)
