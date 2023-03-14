@@ -11,11 +11,29 @@ exports.getAllTours = async function (req, res) {
         fieldsToExclude.forEach(function (field) { delete queryObj[field] });
 
         let queryString = JSON.stringify(queryObj);
-        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, function(match) {
+        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, function (match) {
             return `$${match}`;
         });
 
-        const tours = await Tour.find(JSON.parse(queryString));
+        let result = Tour.find(JSON.parse(queryString));
+
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(",").join(" ");
+
+            result = result.sort(sortBy);
+        } else {
+            result = result.sort('-createdAt');
+        }
+
+        if (req.query.fields) {
+            const fields = req.query.fields.split(",").join(" ");;
+
+            result = result.select(fields);
+        } else {
+            result = result.select("-__v");
+        }
+
+        const tours = await result;
 
         res.status(200).json({
             status: "Success",
