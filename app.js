@@ -13,11 +13,6 @@ if (process.env.DEV_ENV === "development") {
     app.use(morgan('dev'));
 }
 
-app.use(function (req, res, next) {
-    req.requestTime = new Date().toISOString();
-    next();
-});
-
 app.use('/v1/tours', tourRouter);
 app.use('/v1/users', userRouter);
 

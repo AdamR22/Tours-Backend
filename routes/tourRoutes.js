@@ -1,16 +1,17 @@
-const { 
-    checkReqBodyId,
-    checkReqBodyOk,
-    getTour, 
-    getAllTours, 
-    createTour, 
-    updateTour, 
-    deleteTour 
+const {
+    aliasTopCheapTours,
+    getTour,
+    getAllTours,
+    createTour,
+    updateTour,
+    deleteTour
 } = require('../controllers/tourControllers');
 
 const express = require('express');
 
 const router = express.Router();
+
+router.route('/best-cheap-tours').get(aliasTopCheapTours, getAllTours);
 
 router.route('/')
     .get(getAllTours)
