@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel');
+const QueryBuilder = require('../utils/apiQueryBuilder');
 
 exports.aliasTopCheapTours = function (req, _, next) {
     req.query.limit = '5';
@@ -11,49 +12,13 @@ exports.aliasTopCheapTours = function (req, _, next) {
 exports.getAllTours = async function (req, res) {
 
     try {
+        const queryBuilder = new QueryBuilder(Tour.find(), req.query)
+            .filter()
+            .sort()
+            .fieldLimiter()
+            .paginate();
 
-        const queryObj = { ...req.query };
-
-        const fieldsToExclude = ['page', 'sort', 'limit', 'fields'];
-
-        fieldsToExclude.forEach(function (field) { delete queryObj[field] });
-
-        let queryString = JSON.stringify(queryObj);
-        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, function (match) {
-            return `$${match}`;
-        });
-
-        let result = Tour.find(JSON.parse(queryString));
-
-        if (req.query.sort) {
-            const sortBy = req.query.sort.split(",").join(" ");
-
-            result = result.sort(sortBy);
-        } else {
-            result = result.sort('-createdAt');
-        }
-
-        if (req.query.fields) {
-            const fields = req.query.fields.split(",").join(" ");;
-
-            result = result.select(fields);
-        } else {
-            result = result.select("-__v");
-        }
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.params.limit) || 100;
-        const skip = (page - 1) * limit;
-
-        result = result.skip(skip).limit(limit);
-
-        if (req.query.page) {
-            const tourQuantity = await Tour.countDocuments();
-
-            if (skip >= tourQuantity) throw new Error("This page does not exist");
-        }
-
-        const tours = await result;
+        const tours = await queryBuilder.query;
 
         res.status(200).json({
             status: "Success",
