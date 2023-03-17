@@ -1,5 +1,7 @@
 const {
     aliasTopCheapTours,
+    getTourStats,
+    getMonthlyPlan,
     getTour,
     getAllTours,
     createTour,
@@ -12,6 +14,10 @@ const express = require('express');
 const router = express.Router();
 
 router.route('/best-cheap-tours').get(aliasTopCheapTours, getAllTours);
+
+router.route('/tour-stats').get(getTourStats);
+
+router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 router.route('/')
     .get(getAllTours)
