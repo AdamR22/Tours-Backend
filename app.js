@@ -16,10 +16,22 @@ if (process.env.DEV_ENV === "development") {
 app.use('/v1/tours', tourRouter);
 app.use('/v1/users', userRouter);
 
-app.all('*', function (_, res) {
-    res.status(404).json({
-        status: 'Fail',
-        messge: 'Endpoint not defined'
+app.all('*', function (_, _, next) {
+    const error = new Error('Endpoint not defined.');
+    error.status = 'Not found';
+    error.statusCode = 404;
+
+    next(error);
+});
+
+app.use(function (error, _, res, _) {
+
+    error.statusCode = error.statusCode || 500;
+    error.status = error.status || 'Error';
+
+    res.status(error.statusCode).json({
+        status: error.status,
+        message: error.message,
     });
 });
 
