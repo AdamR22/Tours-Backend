@@ -16,4 +16,11 @@ if (process.env.DEV_ENV === "development") {
 app.use('/v1/tours', tourRouter);
 app.use('/v1/users', userRouter);
 
+app.all('*', function (_, res) {
+    res.status(404).json({
+        status: 'Fail',
+        messge: 'Endpoint not defined'
+    });
+});
+
 module.exports = app;
