@@ -3,7 +3,12 @@ class ErrorHandler extends Error {
     super(message);
 
     this.statusCode = statusCode;
-    this.status = statusCode.toString().startsWith("4") ? "Fail" : "Error";
+    this.status =
+      statusCode.toString() === "404"
+        ? "Not found"
+        : statusCode.toString().startsWith("4")
+        ? "Fail"
+        : "Error";
     this.isOperationalError = true;
 
     Error.captureStackTrace(this, this.constructor);

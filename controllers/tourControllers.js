@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const QueryBuilder = require("../utils/apiQueryBuilder");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
+const ErrorHandlerFactory = require("../utils/errorHandlerFactory");
 
 exports.aliasTopCheapTours = function (req, _, next) {
   req.query.limit = "5";
@@ -28,12 +29,16 @@ exports.getAllTours = asyncErrorHandler(async function (req, res, next) {
 });
 
 exports.getTour = asyncErrorHandler(async function (req, res, next) {
-  const tours = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    return next(new ErrorHandlerFactory("Tour not found", 404));
+  }
 
   res.status(200).json({
     status: "Success",
     data: {
-      tours,
+      tour,
     },
   });
 });
@@ -64,7 +69,11 @@ exports.updateTour = asyncErrorHandler(async function (req, res, next) {
 });
 
 exports.deleteTour = asyncErrorHandler(async function (req, res, next) {
-  await Tour.findByIdAndDelete(req.params.id);
+  const tour = await Tour.findByIdAndDelete(req.params.id);
+
+  if (!tour) {
+    return next(new ErrorHandlerFactory("Tour not found", 404));
+  }
 
   res.status(204).json({
     status: "Success",
