@@ -1,4 +1,7 @@
 const ErrorHandler = require("./utils/errorHandlerFactory");
+const developmentErrorHandler = require("./utils/developmentErrorHandler");
+const dbCastErrorHandler = require("./utils/dbErrorHandler");
+const productionErrorHandler = require("./utils/productionErrorHandler");
 
 const tourRouter = require("./routes/tourRoutes");
 
@@ -26,25 +29,16 @@ app.use(function (error, _, res, _) {
   error.statusCode = error.statusCode || 500;
   error.status = error.status || "Error";
 
-  if (process.env.NODE_ENV === "development") {
-    res.status(error.statusCode).json({
-      status: error.status,
-      message: error.message,
-      stack: error.stack,
-      error,
-    });
-  } else if (process.env.NODE_ENV === "production") {
-    if (error.isOperationalError) {
-      res.status(error.statusCode).json({
-        status: error.status,
-        message: error.message,
-      });
-    } else {
-      res.status(500).json({
-        status: 'Error',
-        message: 'Something went wrong.'
-      });
+  if (process.env.DEV_ENV === "development") {
+    developmentErrorHandler(error, res);
+  } else if (process.env.DEV_ENV === "production") {
+    let err = { ...error };
+
+    if (error.name === "CastError") {
+      err = dbCastErrorHandler(err);
     }
+
+    productionErrorHandler(err, res);
   }
 });
 
