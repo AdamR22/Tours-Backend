@@ -1,6 +1,7 @@
 const ErrorHandler = require("./utils/errorHandlerFactory");
 const developmentErrorHandler = require("./utils/developmentErrorHandler");
 const dbCastErrorHandler = require("./utils/dbErrorHandler");
+const duplicateFieldErrorHandler = require('./utils/duplicateFieldsErrorHandler');
 const productionErrorHandler = require("./utils/productionErrorHandler");
 
 const tourRouter = require("./routes/tourRoutes");
@@ -34,8 +35,13 @@ app.use(function (error, _, res, _) {
   } else if (process.env.DEV_ENV === "production") {
     let err = { ...error };
 
+    // Error has name but err does not hence use of error
     if (error.name === "CastError") {
       err = dbCastErrorHandler(err);
+    }
+
+    if (err.code === 11000) {
+      err = duplicateFieldErrorHandler(err);
     }
 
     productionErrorHandler(err, res);
