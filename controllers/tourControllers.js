@@ -1,7 +1,7 @@
 const Tour = require("../models/tourModel");
 const QueryBuilder = require("../utils/apiQueryBuilder");
-const asyncErrorHandler = require("../utils/asyncErrorHandler");
-const ErrorHandlerFactory = require("../utils/errorHandlerFactory");
+const asyncErrorHandler = require("../utils/error_handlers/asyncErrorHandler");
+const ErrorHandlerFactory = require("../utils/error_handlers/errorHandlerFactory");
 
 exports.aliasTopCheapTours = function (req, _, next) {
   req.query.limit = "5";
