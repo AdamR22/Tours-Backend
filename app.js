@@ -26,10 +26,26 @@ app.use(function (error, _, res, _) {
   error.statusCode = error.statusCode || 500;
   error.status = error.status || "Error";
 
-  res.status(error.statusCode).json({
-    status: error.status,
-    message: error.message,
-  });
+  if (process.env.NODE_ENV === "development") {
+    res.status(error.statusCode).json({
+      status: error.status,
+      message: error.message,
+      stack: error.stack,
+      error,
+    });
+  } else if (process.env.NODE_ENV === "production") {
+    if (error.isOperationalError) {
+      res.status(error.statusCode).json({
+        status: error.status,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        status: 'Error',
+        message: 'Something went wrong.'
+      });
+    }
+  }
 });
 
 module.exports = app;
