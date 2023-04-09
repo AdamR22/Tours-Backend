@@ -1,24 +1,28 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv')
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 dotenv.config();
 
-const app = require('./app');
+process.on("uncaughtException", function () {
+  console.log("Uncaught Exception, shutting down...");
+  process.exit(1);
+});
 
-mongoose.set('strictQuery', false);
+const app = require("./app");
 
-mongoose.connect(process.env.LOCAL_DB)
-    .then(function (_) {
-        console.log("Connection to DB successful");
-    });
+mongoose.set("strictQuery", false);
+
+mongoose.connect(process.env.LOCAL_DB).then(function (_) {
+  console.log("Connection to DB successful");
+});
 
 const port = process.env.PORT || 5000;
 
 const server = app.listen(port, function () {
-    console.log(`App running on port ${port}...`)
+  console.log(`App running on port ${port}...`);
 });
 
-process.on('unhandledRejection', function(error) {
-  console.log('Unhandled Exception, shutting down...');
+process.on("unhandledRejection", function (_) {
+  console.log("Unhandled Exception, shutting down...");
 
   server.close(function () {
     process.exit(1);
